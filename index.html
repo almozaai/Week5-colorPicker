@@ -1,0 +1,94 @@
+<html>
+  <head>
+    <style>
+      li{
+        color: white;
+        list-style: none;
+        text-align: center;
+        font-size: 1.5rem;
+        height: 2rem;
+      }
+
+      input, button {
+        height: 1.5rem;
+        width: 100%;
+      }
+      #errorLabel {
+        color: red;
+        font-size: 1.5rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Color Picker</h1>
+    <form id="colorForm">
+      <input name='color'></input>
+      <button id="colorBtn">Add Color</button>
+    </form>
+    <div id="errorLabel"></div>
+    <a href="/" id="resetLink">Reset</a>
+    <ul id="colorPicker"></ul>
+    <script>
+      let ChoseColors = ['red', 'green'];
+      const colorCollection = ['red', 'green', 'blue'];
+      const colorPicker = document.querySelector('#colorPicker');
+      const colorInput = document.querySelector('[name="color"]');
+      const colorForm = document.querySelector('#colorForm');
+      const resetLink = document.querySelector('#resetLink');
+      const colorBtn = document.querySelector('#colorBtn');
+      const errorLabel = document.querySelector('#errorLabel');
+
+      resetLink.addEventListener('click', ev => {
+        ev.preventDefault();
+        render();
+        colorBtn.removeAttribute('disabled');
+        errorLabel.innerHTML = '';
+      })
+
+      colorInput.addEventListener('keyup', ev => {
+        if(colorCollection.includes(colorInput.value)){
+          colorBtn.removeAttribute('disabled');
+          errorLabel.innerHTML = '';
+        } else {
+          colorBtn.setAttribute('disabled', "disabled");
+          errorLabel.innerHTML = 'no!';
+        }
+      });
+
+      colorForm.addEventListener('submit', ev => {
+        ev.preventDefault();
+        if(colorCollection.includes(colorInput.value)){
+          ev.target.removeAttribute('disabled');
+          ChoseColors.push(colorInput.value);
+        } else {
+          ev.target.setAttribute('disabled', "disabled");
+        }
+        render();
+
+      })
+      colorPicker.addEventListener('click', ev => {
+        if(ev.target.tagName == 'LI'){
+          const idx = [...ev.target.parentNode.children].indexOf(ev.target);
+          ChoseColors = ChoseColors.filter((color, _idx) => {
+            return _idx != idx;
+        })
+        }
+        render();
+      })
+      const render = ()=> {
+        const html = ChoseColors.map((color,idx) => {
+          return `
+            <li style='background-color: ${color}'>
+              ${color}
+            </li>
+          `;
+        }).join('');
+        colorPicker.innerHTML = html;
+        let colorIndex = Math.floor(Math.random()*colorCollection.length);
+        colorInput.value = colorCollection[colorIndex];
+      }
+      render();
+    </script>
+  </body>
+</html>
